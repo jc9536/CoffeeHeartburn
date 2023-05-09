@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
 library(tseries)
-library(sjstats)
+library(effectsize)
 ```
 
 # 1. Study Description 
@@ -63,7 +63,7 @@ ggplot(data = df) +
 
 Looking at scatterplot, it appears that there is a positive associate between the amount of coffee consumed and the level of heartburn experienced. Based on this, a regression seems to be appropriate to model the data.
 
-However, regression assumes that the observations (e.g. pairs of coffee-heartburn scores) to be independent of one another, which is not the case for this data because all the scores came from one person. In this case, the statistical analysis may not provide a reliable estimate of the true relationship between coffee consumption and heartburn, as there is no way to distinguish between the effects of coffee consumption and other factors that may be specific to that individual. Technically, this non-independence should be modeled. A better model would be the hierarchical linear modeling (HLM) or mixed-effects model that can account for the non-independence of the observations. Yet, this is also not possible since all the observations are from 1 participant.
+However, regression assumes that the observations (e.g. pairs of coffee-heartburn scores) to be independent of one another, which is not the case for this data because all the scores came from one person. In this case, the statistical analysis may not provide a reliable estimate of the true relationship between coffee consumption and heartburn, as there is no way to distinguish between the effects of coffee consumption and other factors that may be specific to that individual. Technically, this non-independence should be modeled. A better model would be the hierarchical linear modeling (HLM) or mixed-effects model that can account for the non-independence of the observations. Yet, this is also not possible since all the observations are from 1 participant. Therefore, an auto-regressive model will be conducted in order to take into account the dependence between observations and may provide more accurate estimates of the relationship between coffee consumption and heartburn in this individual.
 
 # 2. Linear Regression Model
 
@@ -122,7 +122,7 @@ ar_model
 
 # 3. Report of the Results 
 
-A linear regression was conducted to determine the relationship between the number of cups of coffee and the level of heartburn experienced by a research biologist. The model was statistically significant, F(1, 29) = 8.446, p = .0069, and explained 22.56% of the variance in heartburn (adjusted R² = .1989). The number of cups of coffee significantly predicted the level of heartburn experienced (β = .793, t(29) = 2.906, p = .0069). The effect size was moderate, Cohen's f = .4749. The 95% confidence interval for the slope of the regression line ranged from .235 to 1.351.
+A linear regression was conducted to determine the relationship between the number of cups of coffee and the level of heartburn experienced by a research biologist. The model was statistically significant, F(1, 29) = 8.446, p = .0069, and explained 22.56% of the variance in heartburn (adjusted R² = .1989). The number of cups of coffee significantly predicted the level of heartburn experienced ($\beta$ = .793, t(29) = 2.906, p = .0069). The effect size was moderate, Cohen's f = .4749. The 95% confidence interval for the slope of the regression line ranged from .235 to 1.351.
 
 An auto-regressive moving average (ARMA) model was fit to the data to explore the relationship between coffee consumption and heartburn in one individual. The best model was found to be a moving average model of order one (MA(1)), as indicated by the autocorrelation and partial autocorrelation plots. The model had a significant negative coefficient for the first order moving average term (ma1 = -0.1719, SE = 0.1678, p < .05), indicating that an increase in the previous day's heartburn level was associated with a decrease in the current day's heartburn level. The intercept was also significant (intercept = 1.9586, SE = 0.2831, p < .001). The model had a log-likelihood of -63.64 and an AIC of 133.28, indicating a good fit to the data. The stationarity of the series was confirmed by an augmented Dickey-Fuller test (ADF = -2.5325, p > .05).
 
