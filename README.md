@@ -113,6 +113,9 @@ acf(diff_ts_data)
 pacf(diff_ts_data)
 ```
 
+![ACFPlot](https://github.com/jc9536/CoffeeHeartburn/blob/main/plots/ACFplot.jpg?raw=true)
+![PACTPlot](https://github.com/jc9536/CoffeeHeartburn/blob/main/plots/PACFplot.jpg?raw=true)
+
 Based on our [plots](https://towardsdatascience.com/identifying-ar-and-ma-terms-using-acf-and-pacf-plots-in-time-series-forecasting-ccb9fd073db8), an MA(1) model seems the most appropriate. 
 
 ```r
