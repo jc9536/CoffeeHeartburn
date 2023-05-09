@@ -1,14 +1,15 @@
-# Coffee & Heartburn
-DS.UA.11 Research Report #2   
-author: "Jaimie Chin"   
-date: "2023-05-12"   
-output: pdf_document   
+---
+title: "CoffeeHeartburn"
+author: "Jaimie Chin"
+date: "2023-05-12"
+output: pdf_document
+---
 
-```r 
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```r
+```{r, echo = T, error=FALSE, message=FALSE}
 # Load packages 
 library(tidyverse)
 library(ggplot2)
@@ -22,7 +23,7 @@ library(sjstats)
 
 *A research biologist is concerned that coffee, which she loves, is giving her heartburn, which she gets almost every morning. To determine this, she writes a small program which each day will generate a number of cups of coffee (between 0.5 and 4) that she should drink. She will drink this number in the morning, otherwise refraining from coffee throughout the day, and will record how much heartburn she experiences on a scale from 1 to 10. She tries this for 31 days. What does she find?*
 
-```r
+```{r}
 # Load the dataset from .csv 
 filepath = 'data/Coffee Heartburn.csv'
 df = read_csv(filepath, show_col_types = FALSE)
@@ -31,7 +32,7 @@ df = read_csv(filepath, show_col_types = FALSE)
 df
 ```
 
-```r
+```{r}
 # Let's look at a summary of our data 
 summary(df)
 ```
@@ -44,7 +45,7 @@ Because the researcher is specifically interested in the effect of coffee (X) on
 
 Usually when data is appropriate to run a regression, the corresponding plot is a scatterplot.
 
-```r
+```{r}
 # Create scatterplot to visualize relationship between age and support for the death penalty
 ggplot(data = df) + 
   geom_point(aes(x = Coffee, y = Heartburn), shape = 22, fill = "dimgray") + 
@@ -66,7 +67,7 @@ However, regression assumes that the observations (e.g. pairs of coffee-heartbur
 
 # 2. Linear Regression Model
 
-```r
+```{r}
 # Conduct  a Linear Regression on the data
 model = lm(Heartburn ~ Coffee, data=df)
 
@@ -74,18 +75,18 @@ model = lm(Heartburn ~ Coffee, data=df)
 summary(model)
 ```
 
-```r
+```{r}
 # Get the effect size 
 standardize(model, std.type = "cohens.f")
 ```
 
-```r
+```{r}
 confint(model)
 ```
 
 ## 2.2 Auto-Regressive Model 
 
-```r
+```{r}
 # Convert data to time series object
 ts_data <- ts(df$Heartburn, start = 1, frequency = 1)
 
@@ -93,14 +94,14 @@ ts_data <- ts(df$Heartburn, start = 1, frequency = 1)
 plot(ts_data ~ df$Coffee, xlab = "Cups of Coffee", ylab = "Heartburn Level")
 ```
 
-```r
+```{r}
 # Check for stationarity
 adf.test(ts_data) # if p-value < 0.05, the time series is stationary
 ```
 
 According to our Augmented Dickey-Fuller Test, our time series model is not stationary, so we must perform differencing to achieve stationarity before running an ARIMA model.
 
-```r
+```{r}
 #  ADF test means that there is not enough evidence to suggest that the time series data is stationary
 # Perform differencing to achieve stationarity before running an ARIMA model.
 diff_ts_data <- diff(ts_data)
@@ -112,7 +113,7 @@ pacf(diff_ts_data)
 
 Based on our [plots](https://towardsdatascience.com/identifying-ar-and-ma-terms-using-acf-and-pacf-plots-in-time-series-forecasting-ccb9fd073db8), an MA(1) model seems the most appropriate. 
 
-```r
+```{r}
 # Based on the plots, an MA(1) model may be appropriate
 # Fit AR model
 ar_model <- arima(ts_data, order = c(0, 0, 1))
