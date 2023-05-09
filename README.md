@@ -35,6 +35,14 @@ df
 # Let's look at a summary of our data 
 summary(df)
 ```
+|      ...1     |     Coffee    |    Heartburn    
+________________|_______________|________________   
+| Min.   : 1.0  | Min.   :0.500 |  Min.   :0.000  
+| 1st Qu.: 8.5  | 1st Qu.:1.000 |  1st Qu.:0.000  
+| Median :16.0  | Median :2.000 |  Median :2.000  
+| Mean   :16.0  | Mean   :2.194 |  Mean   :1.935  
+| 3rd Qu.:23.5  | 3rd Qu.:3.000 |  3rd Qu.:3.000  
+| Max.   :31.0  | Max.   :4.000 |  Max.   :6.000  
 
 The Coffee and Heartburn data describes a situation where a research biologist conducts an experiment over 31 days to consider whether coffee is the cause of her heartburn, which she gets almost every morning. To determine this, she randomly drinks coffee in randomized amounts between 0.5 and 4. She refrains from drinking coffee throughout the day, and record how much heartburn she experiences on a 10-point Likert scale. The experiment was conducted to consider if coffee is the cause of heartburn.
 
@@ -75,14 +83,42 @@ model = lm(Heartburn ~ Coffee, data=df)
 summary(model)
 ```
 
+Call:
+lm(formula = Heartburn ~ Coffee, data = df)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.9716 -1.2820  0.4076  1.2180  3.4250 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)   
+(Intercept)   0.1959     0.6756   0.290  0.77390   
+Coffee        0.7930     0.2729   2.906  0.00694 **
+
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.744 on 29 degrees of freedom
+Multiple R-squared:  0.2256,	Adjusted R-squared:  0.1989 
+F-statistic: 8.446 on 1 and 29 DF,  p-value: 0.006939
+
 ```r
 # Get the effect size 
 standardize(model, std.type = "cohens.f")
 ```
 
+Call:
+lm(formula = Heartburn ~ Coffee, data = data_std)
+
+Coefficients:
+(Intercept)       Coffee  
+ -1.624e-16    4.749e-01  
+ 
 ```r
 confint(model)
 ```
+                 2.5 %   97.5 %
+(Intercept) -1.1857760 1.577561
+Coffee       0.2349543 1.351144
 
 ## 2.2 Auto-Regressive Model 
 
@@ -100,6 +136,12 @@ plot(ts_data ~ df$Coffee, xlab = "Cups of Coffee", ylab = "Heartburn Level")
 # Check for stationarity
 adf.test(ts_data) # if p-value < 0.05, the time series is stationary
 ```
+
+	Augmented Dickey-Fuller Test
+
+data:  ts_data
+Dickey-Fuller = -2.5325, Lag order = 3, p-value = 0.3677
+alternative hypothesis: stationary
 
 According to our Augmented Dickey-Fuller Test, our time series model is not stationary, so we must perform differencing to achieve stationarity before running an ARIMA model.
 
@@ -124,6 +166,16 @@ Based on our [plots](https://towardsdatascience.com/identifying-ar-and-ma-terms-
 ar_model <- arima(ts_data, order = c(0, 0, 1))
 ar_model
 ```
+
+Call:
+arima(x = ts_data, order = c(0, 0, 1))
+
+Coefficients:
+          ma1  intercept
+      -0.1719     1.9586
+s.e.   0.1678     0.2831
+
+sigma^2 estimated as 3.55:  log likelihood = -63.64,  aic = 133.28
 
 # 3. Report of the Results 
 
